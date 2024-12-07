@@ -1,6 +1,14 @@
-#include "state.h"
+#include "physics.h"
+#include "controls.h"
 #include "constants.h"
 
+
+char get_user_input() {
+    char input;
+    HAL_UART_Receive(&huart2, (uint8_t *)&input, 1, HAL_MAX_DELAY);
+    return input;
+
+}
 
 void handle_controls(char input) {
     switch (input) {
@@ -23,4 +31,5 @@ void handle_controls(char input) {
             control.pitch_input = -1;
             break;
     }
+
 }
