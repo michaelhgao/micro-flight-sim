@@ -101,22 +101,22 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  // Call control logic
+	  handle_controls(get_user_input());
+
+	  // Update physics
+	  update_physics(dt);
+
+	  // Output state
+	  // Send the current state over UART
+	  char buffer[128];
+	  snprintf(buffer, sizeof(buffer),
+			   "x: %.2f, y: %.2f, z: %.2f\nvx: %.2f, vy: %.2f, vz: %.2f\n", state.x, state.y, state.z, state.vx, state.vy, state.vz);
+	  uart_transmit(buffer);
+
+	  HAL_Delay((int)(dt * 1000));
     /* USER CODE END WHILE */
-    // Call control logic
-    handle_controls(get_user_input());
 
-    // Update physics
-    update_physics(dt);
-
-    // Output state
-    // Send the current state over UART
-	char buffer[128];
-	snprintf(buffer, sizeof(buffer),
-			 "x: %.2f, y: %.2f, z: %.2f\nvx: %.2f, vy: %.2f, vz: %.2f\n",
-			 state.x, state.y, state.z, state.vx, state.vy, state.vz);
-	uart_transmit(buffer);
-
-    HAL_Delay((int)(dt * 1000));
     /* USER CODE BEGIN 3 */
   }
 
