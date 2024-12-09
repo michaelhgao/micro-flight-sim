@@ -15,101 +15,55 @@
  *
  ******************************************************************************
  */
-/* USER CODE END Header */
-/* Includes ------------------------------------------------------------------*/
-#include "main.h"
 
-/* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
+#include "main.h"
 #include "physics.h"
 #include "controls.h"
 #include "constants.h"
 #include "stm32l4xx_hal.h"
 #include <stdio.h>
 #include <string.h>
-/* USER CODE END Includes */
 
-/* Private typedef -----------------------------------------------------------*/
-/* USER CODE BEGIN PTD */
 
-/* USER CODE END PTD */
-
-/* Private define ------------------------------------------------------------*/
-/* USER CODE BEGIN PD */
-
-/* USER CODE END PD */
-
-/* Private macro -------------------------------------------------------------*/
-/* USER CODE BEGIN PM */
-
-/* USER CODE END PM */
-
-/* Private variables ---------------------------------------------------------*/
 UART_HandleTypeDef huart2;
 
-/* USER CODE BEGIN PV */
 
-/* USER CODE END PV */
-
-/* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
-/* USER CODE BEGIN PFP */
 
-/* USER CODE END PFP */
-
-/* Private user code ---------------------------------------------------------*/
-/* USER CODE BEGIN 0 */
-
-/* USER CODE END 0 */
 
 /**
  * @brief  The application entry point.
  * @retval int
  */
 int main(void) {
-
-	/* USER CODE BEGIN 1 */
-
-	/* USER CODE END 1 */
-
-	/* MCU Configuration--------------------------------------------------------*/
-
 	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
 	HAL_Init();
 
-	/* USER CODE BEGIN Init */
-
-	/* USER CODE END Init */
-
 	/* Configure the system clock */
 	SystemClock_Config();
-
-	/* USER CODE BEGIN SysInit */
-
-	/* USER CODE END SysInit */
-
-	/* Initialize all configured peripherals */
 	MX_GPIO_Init();
 	MX_USART2_UART_Init();
-	/* USER CODE BEGIN 2 */
+
 	physics_init();
 	controls_init();
+
+	char input;
 	char output_buffer[128];
 	float dt = 0.01;
-	/* USER CODE END 2 */
 
-	/* Infinite loop */
-	/* USER CODE BEGIN WHILE */
+	char* welcome_msg = "Flight Simulator Ready.\r\n";
+	HAL_UART_Transmit(&huart2, (uint8_t *)welcome_msg, strlen(welcome_msg), HAL_MAX_DELAY);
+
 	while (1) {
 		// Call control logic
-		handle_controls(get_user_input());
+		input = get_user_input();
+		handle_controls(input);
 
 		// Update physics
 		update_physics(dt);
 
-		// Output state
 		// Send the current state over UART
 		snprintf(output_buffer, sizeof(output_buffer),
 				"Position: (%.2f, %.2f, %.2f) | Velocity: (%.2f, %.2f, %.2f)\r\n",
@@ -118,11 +72,7 @@ int main(void) {
 				strlen(output_buffer), HAL_MAX_DELAY);
 
 		HAL_Delay(10);
-		/* USER CODE END WHILE */
-
-		/* USER CODE BEGIN 3 */
 	}
-	/* USER CODE END 3 */
 }
 
 /**

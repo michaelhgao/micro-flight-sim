@@ -3,7 +3,9 @@
 #include "constants.h"
 #include <math.h>
 
+
 State state;
+
 
 void physics_init() {
 	state.x = 0;

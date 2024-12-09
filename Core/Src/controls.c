@@ -3,7 +3,9 @@
 #include "constants.h"
 #include <math.h>
 
+
 Control control;
+
 
 void controls_init() {
 	control.throttle_input = 0;
@@ -14,8 +16,8 @@ void controls_init() {
 
 char get_user_input() {
 	char input;
-	if (HAL_UART_Receive(&huart2, (uint8_t*) &input, sizeof(input),
-			HAL_MAX_DELAY) == HAL_OK) {
+	if (HAL_UART_Receive(&huart2, (uint8_t*) &input, sizeof(input), 10) == HAL_OK) {
+		HAL_UART_Transmit(&huart2, (uint8_t *)&input, sizeof(input), HAL_MAX_DELAY);
 		return input;
 	}
 	return '\0';
