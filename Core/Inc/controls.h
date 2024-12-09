@@ -14,7 +14,8 @@ typedef struct {
 extern Control control;
 extern UART_HandleTypeDef huart2; // Ensure UART2 is initialized in STM32CubeMX
 
+void controls_init();
 char get_user_input();
-void handle_controls(char input);
+void handle_controls(const char input);
 
 #endif
