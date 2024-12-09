@@ -24,8 +24,7 @@ void physics_init() {
 
 void update_physics(float dt) {
 	// speed
-	float speed = sqrt(
-			state.vx * state.vx + state.vy * state.vy + state.vz * state.vz);
+	float speed = sqrt(state.vx * state.vx + state.vy * state.vy + state.vz * state.vz);
 
 	// forces
 	float thrust = control.throttle_input * MAX_THRUST;
@@ -33,7 +32,7 @@ void update_physics(float dt) {
 	float lift = LIFT_COEFF * AIR_DENSITY * speed * speed * 0.5 * WING_AREA;
 
 	// vel update
-	state.vx += (thrust - drag) / MASS * dt;
+	state.vx += fmax(((thrust - drag) / MASS * dt), 0.0);
 	state.vy += (0) / MASS * dt; // 0 for now
 	state.vz += (lift - GRAVITY * MASS) / MASS * dt;
 

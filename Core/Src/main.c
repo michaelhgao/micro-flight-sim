@@ -32,7 +32,6 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 
-
 /**
  * @brief  The application entry point.
  * @retval int
@@ -49,17 +48,22 @@ int main(void) {
 	physics_init();
 	controls_init();
 
-	char input;
+	char input_buffer[1];
 	char output_buffer[128];
-	float dt = 0.01;
+	float dt = 1.0/REFRESH_RATE;
 
 	char* welcome_msg = "Flight Simulator Ready.\r\n";
 	HAL_UART_Transmit(&huart2, (uint8_t *)welcome_msg, strlen(welcome_msg), HAL_MAX_DELAY);
 
 	while (1) {
 		// Call control logic
-		input = get_user_input();
-		handle_controls(input);
+		input_buffer[0] = get_user_input();
+		if (input_buffer[0] == 27) {
+			snprintf(output_buffer, sizeof(output_buffer),"Exiting...\r\n");
+			HAL_UART_Transmit(&huart2, (uint8_t*)output_buffer, strlen(output_buffer), HAL_MAX_DELAY);
+			break;
+		}
+		handle_controls(input_buffer[0]);
 
 		// Update physics
 		update_physics(dt);
@@ -68,10 +72,9 @@ int main(void) {
 		snprintf(output_buffer, sizeof(output_buffer),
 				"Position: (%.2f, %.2f, %.2f) | Velocity: (%.2f, %.2f, %.2f)\r\n",
 				state.x, state.y, state.z, state.vx, state.vy, state.vz);
-		HAL_UART_Transmit(&huart2, (uint8_t*) output_buffer,
-				strlen(output_buffer), HAL_MAX_DELAY);
+		HAL_UART_Transmit(&huart2, (uint8_t*)output_buffer, strlen(output_buffer), HAL_MAX_DELAY);
 
-		HAL_Delay(10);
+		HAL_Delay(1000/REFRESH_RATE);
 	}
 }
 

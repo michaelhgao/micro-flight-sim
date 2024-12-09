@@ -10,5 +10,6 @@
 #define DRAG_COEFF 0.1
 #define WING_AREA 47.01 // m^2
 #define AIR_DENSITY 1.225 // kg/m^3
+#define REFRESH_RATE 5 // hz
 
 #endif
